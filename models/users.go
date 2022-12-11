@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -10,11 +11,12 @@ import (
 type User struct {
 	gorm.Model
 	//Id           uint    `gorm:"primary_key"`
-	FirstName string `gorm:"varchar(255);not null"`
-	LastName  string `gorm:"varchar(255);not null"`
-	Username  string `gorm:"column:username"`
-	Email     string `gorm:"column:email;unique_index"`
-	Password  string `gorm:"column:password;not null"`
+	Name     string    `gorm:"varchar(255);not null"`
+	Address  string    `gorm:"varchar(255);not null"`
+	Contact  string    `gorm:"column:contact"`
+	Email    string    `gorm:"column:email;unique_index"`
+	Password string    `gorm:"column:password;not null"`
+	Created  time.Time `gorm:"column:created_at"`
 
 	// Comments []Comment `gorm:"foreignkey:UserId"`
 
