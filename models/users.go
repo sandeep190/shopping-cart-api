@@ -2,8 +2,10 @@ package models
 
 import (
 	"errors"
+	"os"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -33,4 +35,18 @@ func (u *User) SetPassword(password string) error {
 	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 	u.Password = string(passwordHash)
 	return nil
+}
+
+func (user *User) GenerateJwtToken() string {
+
+	jwt_token := jwt.New(jwt.SigningMethodHS512)
+
+	jwt_token.Claims = jwt.MapClaims{
+		"user_id":  user.ID,
+		"username": user.Email,
+		"exp":      time.Now().Add(time.Hour * 24 * 90).Unix(),
+	}
+	// Sign and get the complete encoded token as a string
+	token, _ := jwt_token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	return token
 }
