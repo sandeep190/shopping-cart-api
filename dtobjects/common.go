@@ -43,8 +43,7 @@ func BadRequestDto(err error) ErrorDto {
 func DetailedErrors(key string, err error) map[string]interface{} {
 	return map[string]interface{}{
 		"success":  false,
-		"messages": []string{fmt.Sprintf("s -> %v", err.Error())},
-		"errors":   err,
+		"messages": []string{fmt.Sprintf("%v", err.Error())},
 	}
 }
 

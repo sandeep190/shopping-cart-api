@@ -12,15 +12,13 @@ import (
 
 type User struct {
 	gorm.Model
-	//Id           uint    `gorm:"primary_key"`
-	Name     string    `gorm:"varchar(255);not null"`
-	Address  string    `gorm:"varchar(255);not null"`
-	Contact  string    `gorm:"column:contact"`
-	Email    string    `gorm:"column:email;unique_index"`
-	Password string    `gorm:"column:password;not null"`
-	Created  time.Time `gorm:"column:created_at"`
+	Name     string `gorm:"size(255);not null"`
+	Address  string `gorm:"size(255);not null"`
+	Contact  string `gorm:"column:contact;size(255);"`
+	Email    string `gorm:"column:email;size(255);unique_index"`
+	Password string `gorm:"column:password;size(255);not null"`
 
-	// Comments []Comment `gorm:"foreignkey:UserId"`
+	Comments []Comment `gorm:"foreignkey:UserId"`
 
 	// Roles     []Role     `gorm:"many2many:users_roles;"`
 	// UserRoles []UserRole `gorm:"foreignkey:UserId"`

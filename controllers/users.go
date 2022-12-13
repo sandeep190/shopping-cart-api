@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"shopping_cart/database"
 	"shopping_cart/dtobjects"
@@ -55,7 +54,7 @@ func Login(c *gin.Context) {
 	db := database.GetConnection()
 	var user models.User
 	result := db.Where("email = ?", request.Email).First(&user)
-	log.Println(&user)
+
 	if result.Error != nil {
 		c.JSON(http.StatusForbidden, dtobjects.DetailedErrors("login_error", result.Error))
 		return
