@@ -15,7 +15,7 @@ type Category struct {
 	IsNewRecord bool         `gorm:"-;default:false"`
 }
 
-func (cat *Category) BeforeSave() (err error) {
+func (cat *Category) BeforeSave(*gorm.DB) (err error) {
 	cat.Slug = slug.Make(cat.Name)
 	return
 }

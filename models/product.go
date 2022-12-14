@@ -21,7 +21,7 @@ type Product struct {
 	CommentsCount int          `gorm:"-"`
 }
 
-func (product *Product) BeforeSave() (err error) {
+func (product *Product) BeforeSave(*gorm.DB) (err error) {
 	product.Slug = slug.Make(product.Name)
 	return
 }

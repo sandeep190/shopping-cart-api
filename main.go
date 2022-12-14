@@ -5,6 +5,7 @@ import (
 	"os"
 	"shopping_cart/controllers"
 	"shopping_cart/database"
+	"shopping_cart/middleware"
 	"shopping_cart/models"
 
 	"github.com/gin-contrib/cors"
@@ -27,9 +28,11 @@ func main() {
 	makeMigration(db)
 	app := gin.Default()
 	app.Use(cors.Default())
+	app.Use(middleware.JwtTokenVerify())
 	apiRoutes := app.Group("/api")
 
 	controllers.UsersRoutes(apiRoutes.Group("/users"))
+	controllers.CategoryRoutes(apiRoutes.Group("category"))
 	app.Run()
 }
 
