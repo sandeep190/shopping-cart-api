@@ -1,0 +1,33 @@
+_id: req_ab13ce64061c449d9310928a3f2539b7
+type: Request
+parentId: fld_8e6df141efe04332a5119c0eca8a7486
+modified: 1671071563157
+created: 1662867597606
+url: localhost:8080/api/users/signup
+name: Register
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"name": "Sandeep",
+    	"email": "skmaurya190@gmail.com",
+    	"password": "admin",
+    	"address": "varanasi",
+    	"contact":"11111111111"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_8ad2c9c5a9c546078665c2ecea95a984
+authentication: {}
+metaSortKey: -1662867597606
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

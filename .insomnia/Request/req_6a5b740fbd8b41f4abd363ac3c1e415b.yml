@@ -1,0 +1,29 @@
+_id: req_6a5b740fbd8b41f4abd363ac3c1e415b
+type: Request
+parentId: fld_8e6df141efe04332a5119c0eca8a7486
+modified: 1670986883814
+created: 1662867591751
+url: localhost:8080/api/users/login
+name: Login
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"email":"skmaurya190@gmail.com",
+    	"password":"admin"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1662867591751
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

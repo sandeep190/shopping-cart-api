@@ -1,0 +1,21 @@
+_id: req_3cf8de2ea7354feea7d823596ab6f322
+type: Request
+parentId: fld_8e6df141efe04332a5119c0eca8a7486
+modified: 1670987417004
+created: 1670986876895
+url: localhost:8080/api/category
+name: category list
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1670986876895
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
