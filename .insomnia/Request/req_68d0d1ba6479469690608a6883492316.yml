@@ -1,0 +1,43 @@
+_id: req_68d0d1ba6479469690608a6883492316
+type: Request
+parentId: fld_8e6df141efe04332a5119c0eca8a7486
+modified: 1671073481570
+created: 1670987437925
+url: localhost:8080/api/category/create
+name: create category
+description: ""
+method: POST
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_cb773adf1e274c7f84f657829741cadc
+      name: image
+      value: ""
+      description: ""
+      type: file
+      multiline: null
+      fileName: C:\Users\91888\Pictures\vlcsnap-2022-08-21-11h18m49s701.png
+    - id: pair_b12febafbdfd4e3089ca51d1bfc27758
+      name: name
+      value: owmen
+      description: ""
+    - id: pair_0d897fecb74345dc8317485a055a381f
+      name: description
+      value: owmen
+      description: ""
+parameters: []
+headers:
+  - name: Content-Type
+    value: multipart/form-data
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzg4NDc4ODMsInVzZXJfaWQiOjMsInVzZXJuYW1lIjoic2ttYXVyeWExOTBAZ21haWwuY29tIn0.Ix5RhHYv7-4NW4OAdqRmo8nC9VpxJNii25lVKEW_nyVasW_gXSC7dTJ5pzibqzlaErOcTJLLLgdC4NSyXGZwKQ
+  prefix: bearer
+metaSortKey: -1666927237250.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
