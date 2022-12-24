@@ -24,7 +24,7 @@ func main() {
 
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(os.Getenv("GIN_MODE"))
 	makeMigration(db)
 	app := gin.Default()
 	app.Use(cors.Default())
@@ -33,6 +33,11 @@ func main() {
 
 	controllers.UsersRoutes(apiRoutes.Group("/users"))
 	controllers.CategoryRoutes(apiRoutes.Group("category"))
+	app.Static("/assets", "./assets")
+	app.LoadHTMLGlob("templates/*/*.html")
+
+	controllers.PagesRoutes(&app.RouterGroup)
+
 	app.Run()
 }
 
