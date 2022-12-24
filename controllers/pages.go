@@ -20,7 +20,7 @@ func AboutUs(c *gin.Context) {
 func Index(c *gin.Context) {
 
 	data := make(map[string]string)
-	data["title"] = "index page 1111"
+	data["title"] = "index page "
 	data["content"] = "this is the index page"
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"content": data,

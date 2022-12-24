@@ -37,8 +37,8 @@ func main() {
 	app.LoadHTMLGlob("templates/*/*.html")
 
 	controllers.PagesRoutes(&app.RouterGroup)
-
-	app.Run()
+	controllers.AdminRoutes(&app.RouterGroup)
+	app.Run(":9000")
 }
 
 func migrate(db *gorm.DB) {

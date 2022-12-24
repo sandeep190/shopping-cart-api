@@ -9,6 +9,8 @@ type Category struct {
 	gorm.Model
 	Name        string       `gorm:"not null"`
 	Description string       `gorm:"default:null"`
+	PeraentId   int          `gorm:"default:0"`
+	Image       string       `gorm:"default:null"`
 	Slug        string       `gorm:"unique_index"`
 	Products    []Product    `gorm:"many2many:products_categories;"`
 	Images      []FileUpload `gorm:"foreignKey:CategoryId"`
