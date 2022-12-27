@@ -27,6 +27,7 @@ func CreateCategoryDto(category models.Category) map[string]interface{} {
 	return map[string]interface{}{
 		"id":          category.ID,
 		"name":        category.Name,
+		"parent_id":   category.ParentId,
 		"description": category.Description,
 		"image_urls":  imageUrls,
 	}
