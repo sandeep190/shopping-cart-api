@@ -28,8 +28,8 @@ func AdminIndex(c *gin.Context) {
 }
 
 func AdminCategoryList(c *gin.Context) {
-	log.Println(c.Request)
 	database := database.GetConnection()
+	log.Println("--->", c.Request.URL.Query())
 	var categories []models.Category
 	err := database.Preload("Images", "category_id IS NOT NULL").Find(&categories).Error
 	if err != nil {
@@ -38,6 +38,7 @@ func AdminCategoryList(c *gin.Context) {
 	c.HTML(http.StatusOK, "admin_category.html", gin.H{
 		"title":    "Admin - Category Details",
 		"category": dtobjects.CategoryListDto(categories),
+		"endpoint": Geturl(c),
 	})
 }
 
@@ -106,4 +107,8 @@ func saveCategory(c *gin.Context) {
 		"messages": "Data save successfully",
 	})
 
+}
+
+func Geturl(c *gin.Context) string {
+	return c.Request.URL.Path
 }
