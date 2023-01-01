@@ -34,6 +34,7 @@ func main() {
 	controllers.UsersRoutes(apiRoutes.Group("/users"))
 	controllers.CategoryRoutes(apiRoutes.Group("category"))
 	app.Static("/assets", "./assets")
+	app.Static("/static", "./static")
 	app.LoadHTMLGlob("templates/*/*.html")
 
 	controllers.PagesRoutes(&app.RouterGroup)

@@ -7,6 +7,7 @@ import (
 
 type Category struct {
 	gorm.Model
+	ID          int          `gorm:"primary key"`
 	Name        string       `gorm:"not null"`
 	Description string       `gorm:"default:null"`
 	ParentId    int          `gorm:"default:0"`

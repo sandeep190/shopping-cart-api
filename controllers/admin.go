@@ -29,16 +29,26 @@ func AdminIndex(c *gin.Context) {
 
 func AdminCategoryList(c *gin.Context) {
 	database := database.GetConnection()
-	log.Println("--->", c.Request.URL.Query())
+	id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
+
 	var categories []models.Category
 	err := database.Preload("Images", "category_id IS NOT NULL").Find(&categories).Error
 	if err != nil {
 		log.Println(err)
 	}
+	var selectedCategory models.Category
+	for _, value := range categories {
+		if value.ID == id {
+			selectedCategory = value
+			//log.Printf("category list --> s%#v\n", selectedCategory)
+		}
+	}
 	c.HTML(http.StatusOK, "admin_category.html", gin.H{
-		"title":    "Admin - Category Details",
-		"category": dtobjects.CategoryListDto(categories),
-		"endpoint": Geturl(c),
+		"title":            "Admin - Category Details",
+		"category":         dtobjects.CategoryListDto(categories),
+		"endpoint":         Geturl(c),
+		"selectedCategory": selectedCategory,
+		"id":               id,
 	})
 }
 
@@ -47,6 +57,7 @@ func saveCategory(c *gin.Context) {
 	name := c.PostForm("name")
 	description := c.PostForm("description")
 	parent, _ := strconv.Atoi(c.PostForm("parent_id"))
+	ID, _ := strconv.Atoi(c.PostForm("id"))
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
@@ -95,8 +106,13 @@ func saveCategory(c *gin.Context) {
 		categoryImages[index] = models.FileUpload{Filename: fileName, FilePath: string(filepath.Separator) + filePath, FileSize: fileSize}
 	}
 
-	category := models.Category{Name: name, Description: description, Images: categoryImages, ParentId: parent}
-	err = database.Create(&category).Error
+	if ID == 0 {
+		category := models.Category{Name: name, Description: description, Images: categoryImages, ParentId: parent}
+		err = database.Create(&category).Error
+	} else {
+		category := models.Category{Name: name, Description: description, Images: categoryImages, ParentId: parent, ID: ID}
+		err = database.Updates(&category).Where("id", ID).Error
+	}
 	if err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusUnprocessableEntity, dtobjects.DetailedErrors("database", err))

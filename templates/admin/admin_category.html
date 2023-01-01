@@ -44,13 +44,14 @@
                         method="post"
                         enctype="multipart/form-data"
                       >
+                      
                         <div class="mb-3">
                           <label class="form-label" for="basic-default-fullname">Category Name</label>
                           <input
                             type="text"
                             class="form-control"
                             id="basic-default-fullname"
-                            name="name"
+                            name="name" value="{{ .selectedCategory.Name }}"
                           />
                         </div>
                         <div class="mb-3">
@@ -65,7 +66,7 @@
                           >
                             <option value="0">Select One</option>
                             {{ range $key, $value := .category.categories}}
-                            <option value="{{ $value.id}}">
+                            <option value="{{ $value.id}}" {{ if eq $value.id $.selectedCategory.ParentId }} selected {{ end}}>
                               {{ $value.name }}
                             </option>
                             {{ end }}
@@ -73,6 +74,9 @@
                         </div>
 
                         <div class="mb-3">
+                          {{ if .selectedCategory.Images}}
+                          <img src="/static/images/categories/{{ (index .selectedCategory.Images 0).Filename }}" width="150px"><br>
+                          {{ end }}
                           <label for="formFile" class="form-label">Image</label>
                           <input
                             class="form-control"
@@ -89,8 +93,9 @@
                             id="basic-default-message"
                             class="form-control"
                             name="description"
-                          ></textarea>
+                          >{{ .selectedCategory.Description }}</textarea>
                         </div>
+                        <input type="hidden" value="{{ .id }}" name="id">
                         <button class="btn btn-primary">
                           Save
                         </button>
@@ -118,7 +123,7 @@
                     <td>{{ $value.parent_id}}</td>
                     <td>{{ $len := len $value.image_urls}}
                       {{ if ge $len 1}}
-                      {{$value.image_urls}}
+                      <img src="{{ index $value.image_urls 0}}" width="100px"/>
                       {{end}}
                     </td>
                     <td>{{$value.description}}</td>
@@ -163,12 +168,17 @@
             var formData = new FormData(this);
         
             $.ajax({
-                url: '',
+                url: '/admin/master/savecategory',
                 type: 'POST',
                 data: formData,
                 success: function (data) {
                     console.log(data);
+                    if(data.success) {
+                    alert("data created/updated Sucessfuly !!!!")
                     window.location.reload();
+                    } else {
+                      alert("Something wnet wrong!!!")
+                    }
                 },
                 cache: false,
                 contentType: false,
