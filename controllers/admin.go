@@ -29,26 +29,29 @@ func AdminIndex(c *gin.Context) {
 
 func AdminCategoryList(c *gin.Context) {
 	database := database.GetConnection()
-	id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
+	edit_id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
+	rows, _ := database.Raw("select cat.id, cat.name, cat.description,cat.parent_id, f.filename,f.file_path, pcat.name as parent from categories as cat left join file_uploads as f on f.category_id = cat.id left join categories as pcat on pcat.parent_id = cat.id ").Rows()
 
-	var categories []models.Category
-	err := database.Preload("Images", "category_id IS NOT NULL").Find(&categories).Error
-	if err != nil {
-		log.Println(err)
+	var cat []models.CatagoryList
+	var id int
+	for rows.Next() {
+		database.ScanRows(rows, &cat)
+		rows.Scan(&id)
+		log.Printf("category list ###--> %#v\n", cat)
 	}
-	var selectedCategory models.Category
-	for _, value := range categories {
-		if value.ID == id {
+
+	var selectedCategory models.CatagoryList
+	for _, value := range cat {
+		if value.ID == edit_id {
 			selectedCategory = value
-			//log.Printf("category list --> s%#v\n", selectedCategory)
 		}
 	}
 	c.HTML(http.StatusOK, "admin_category.html", gin.H{
 		"title":            "Admin - Category Details",
-		"category":         dtobjects.CategoryListDto(categories),
+		"category":         dtobjects.CategoryListAdminDto(cat),
 		"endpoint":         Geturl(c),
 		"selectedCategory": selectedCategory,
-		"id":               id,
+		"id":               edit_id,
 	})
 }
 

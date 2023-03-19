@@ -32,3 +32,25 @@ func CreateCategoryDto(category models.Category) map[string]interface{} {
 		"image_urls":  imageUrls,
 	}
 }
+
+func CategoryListAdminDto(categories []models.CatagoryList) map[string]interface{} {
+	result := map[string]interface{}{}
+	var t = make([]interface{}, len(categories))
+	for i := 0; i < len(categories); i++ {
+		t[i] = CreateCategoryAdminDto(categories[i])
+	}
+	result["categories"] = t
+	return CreateSuccessDto(result)
+}
+
+func CreateCategoryAdminDto(category models.CatagoryList) map[string]interface{} {
+	imageUrls := strings.Replace(category.FilePath, "\\", "/", -1)
+	return map[string]interface{}{
+		"id":          category.ID,
+		"name":        category.Name,
+		"parent_id":   category.ParentId,
+		"description": category.Description,
+		"image_urls":  imageUrls,
+		"parent":      category.Parent,
+	}
+}

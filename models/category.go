@@ -13,12 +13,23 @@ type Category struct {
 	ParentId    int          `gorm:"default:0"`
 	Image       string       `gorm:"default:null"`
 	Slug        string       `gorm:"unique_index"`
-	Products    []Product    `gorm:"many2many:products_categories;"`
 	Images      []FileUpload `gorm:"foreignKey:CategoryId"`
 	IsNewRecord bool         `gorm:"-;default:false"`
+	Parent      *Category    `gorm:"-"`
 }
 
 func (cat *Category) BeforeSave(*gorm.DB) (err error) {
 	cat.Slug = slug.Make(cat.Name)
 	return
+}
+
+type CatagoryList struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	ParentId    int    `json:"parent_id"`
+	Filename    string `json:"filename"`
+	FilePath    string `json:"file_path"`
+	Slug        string `json:"slug"`
+	Parent      string `json:"parent"`
 }

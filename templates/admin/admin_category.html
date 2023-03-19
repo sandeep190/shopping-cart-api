@@ -74,8 +74,8 @@
                         </div>
 
                         <div class="mb-3">
-                          {{ if .selectedCategory.Images}}
-                          <img src="/static/images/categories/{{ (index .selectedCategory.Images 0).Filename }}" width="150px"><br>
+                          {{ if .selectedCategory.Filename}}
+                          <img src="/static/images/categories/{{ .selectedCategory.Filename }}" width="150px"><br>
                           {{ end }}
                           <label for="formFile" class="form-label">Image</label>
                           <input
@@ -120,11 +120,9 @@
                   <tr>
                     <td>{{ $value.id }}</td>
                     <td>{{ $value.name}}</td>
-                    <td>{{ $value.parent_id}}</td>
-                    <td>{{ $len := len $value.image_urls}}
-                      {{ if ge $len 1}}
-                      <img src="{{ index $value.image_urls 0}}" width="100px"/>
-                      {{end}}
+                    <td>{{ $value.parent}}</td>
+                    <td>
+                      <img src="{{ $value.image_urls}}" width="100px"/>                     
                     </td>
                     <td>{{$value.description}}</td>
                     <td> <a href ="/admin/master/category?edit={{ $value.id }}">
