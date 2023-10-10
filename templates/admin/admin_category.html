@@ -14,6 +14,7 @@
     </title>
     <meta name="description" content="" />
     {{ template "admin_header.html"}}
+    
   </head>
   <body>
     <!-- Layout wrapper -->
@@ -117,12 +118,12 @@
                 </thead>
                 <tbody>
                   {{ range $key, $value := .category.categories }}
-                  <tr>
+                  <tr id="catid_{{ $value.id }}">
                     <td>{{ $value.id }}</td>
                     <td>{{ $value.name}}</td>
                     <td>{{ $value.parent}}</td>
                     <td>
-                      <img src="{{ $value.image_urls}}" width="100px"/>                     
+                      <img id="img_{{ $value.id }}" src="{{ $value.image_urls}}" width="100px"/>                     
                     </td>
                     <td>{{$value.description}}</td>
                     <td> <a href ="/admin/master/category?edit={{ $value.id }}">
@@ -130,7 +131,9 @@
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                       </svg>
-                       </a></td>
+                       </a> 
+                       <a class="bi bi-trash delCat" cat-id="{{ $value.id }}" style="color:red" >del </a>
+                      </td>
                   </tr>
                   {{ end }}
                   
@@ -170,7 +173,6 @@
                 type: 'POST',
                 data: formData,
                 success: function (data) {
-                    console.log(data);
                     if(data.success) {
                     alert("data created/updated Sucessfuly !!!!")
                     window.location.reload();
@@ -183,6 +185,24 @@
                 processData: false
             });
         });
+
+        $(".delCat").click(function(){
+          var catId = $(this).attr("cat-id");
+          var img = $("#img_"+catId).attr("src");
+          alert(img);
+          $.ajax({
+            url:"/admin/master/del_category?delid="+catId+"&img="+img,
+            type:"POST",
+            success:function(data) {
+              if(data.success){
+                alert("Category deleted Successfuly!!");
+                $('#catid_'+catId).hide();
+              } else {
+                alert('Somthings went wrong!!!');
+              }
+            }
+          })
+        })
         });
       </script>
       <div class="layout-overlay layout-menu-toggle"></div>
@@ -191,4 +211,3 @@
     {{ template "admin_footer.html"}}
   </body>
 </html>
-

@@ -1,7 +1,7 @@
 {{ define "layouts/headers.html" }}
 <meta charset="utf-8">
 
-<title>{{ .content.title }} </title>
+<title>{{ if .content.title }}{{ .content.title }} {{ end }} </title>
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="Free HTML Templates" name="keywords">
 <meta content="Free HTML Templates" name="description">
@@ -17,9 +17,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
 <!-- Libraries Stylesheet -->
-<link href="assets/lib/animate/animate.min.css" rel="stylesheet">
-<link href="assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+<link href="/assets/lib/animate/animate.min.css" rel="stylesheet">
+<link href="/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
 <!-- Customized Bootstrap Stylesheet -->
-<link href="assets/css/style.css" rel="stylesheet">
+<link href="/assets/css/style.css" rel="stylesheet">
 {{ end }}

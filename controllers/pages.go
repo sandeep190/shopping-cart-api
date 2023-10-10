@@ -12,8 +12,11 @@ func PagesRoutes(routes *gin.RouterGroup) {
 }
 
 func AboutUs(c *gin.Context) {
+	data := make(map[string]string)
+	data["title"] = "index page "
+	data["content"] = "this is the index page"
 	c.HTML(http.StatusOK, "about.html", gin.H{
-		"content": "This is an about page...",
+		"content": data,
 	})
 }
 

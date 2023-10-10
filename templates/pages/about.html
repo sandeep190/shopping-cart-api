@@ -1,4 +1,12 @@
-Hello
-Dear
-I am good Boys----
-{{ .content }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{template "layouts/headers.html" . }}
+</head>
+
+<body>
+    {{template "layouts/header-menu.html" . }}
+{{ .content.content }}
+
+{{template "layouts/footer.html" . }}

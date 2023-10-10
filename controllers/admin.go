@@ -19,6 +19,7 @@ func AdminRoutes(routes *gin.RouterGroup) {
 	routes.GET("admin", AdminIndex)
 	routes.GET("/admin/master/category", AdminCategoryList)
 	routes.POST("/admin/master/savecategory", saveCategory)
+	routes.POST("/admin/master/del_category", DelCategory)
 }
 
 func AdminIndex(c *gin.Context) {
@@ -30,14 +31,13 @@ func AdminIndex(c *gin.Context) {
 func AdminCategoryList(c *gin.Context) {
 	database := database.GetConnection()
 	edit_id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
-	rows, _ := database.Raw("select cat.id, cat.name, cat.description,cat.parent_id, f.filename,f.file_path, pcat.name as parent from categories as cat left join file_uploads as f on f.category_id = cat.id left join categories as pcat on pcat.parent_id = cat.id ").Rows()
+	rows, _ := database.Raw("select cat.id, cat.name, cat.description,cat.parent_id, f.filename,f.file_path, pcat.name as parent from categories as cat left join file_uploads as f on f.category_id = cat.id left join categories as pcat on pcat.parent_id = cat.id group by cat.id ").Rows()
 
 	var cat []models.CatagoryList
 	var id int
 	for rows.Next() {
 		database.ScanRows(rows, &cat)
 		rows.Scan(&id)
-		log.Printf("category list ###--> %#v\n", cat)
 	}
 
 	var selectedCategory models.CatagoryList
@@ -130,4 +130,19 @@ func saveCategory(c *gin.Context) {
 
 func Geturl(c *gin.Context) string {
 	return c.Request.URL.Path
+}
+
+func DelCategory(c *gin.Context) {
+	db := database.GetConnection()
+	delid, _ := strconv.Atoi(c.Request.URL.Query().Get("delid"))
+	img := c.Request.URL.Query().Get("img")
+	path, _ := os.Getwd()
+
+	os.Remove(path + img)
+	category := models.Category{ID: delid}
+	db.Delete(&category)
+	c.JSON(http.StatusOK, gin.H{
+		"success":  true,
+		"messages": "Data Deleted successfully",
+	})
 }
