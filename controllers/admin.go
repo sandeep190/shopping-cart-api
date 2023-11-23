@@ -31,7 +31,7 @@ func AdminIndex(c *gin.Context) {
 func AdminCategoryList(c *gin.Context) {
 	database := database.GetConnection()
 	edit_id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
-	rows, _ := database.Raw("select cat.id, cat.name, cat.description,cat.parent_id, f.filename,f.file_path, pcat.name as parent from categories as cat left join file_uploads as f on f.category_id = cat.id left join categories as pcat on pcat.parent_id = cat.id group by cat.id ").Rows()
+	rows, _ := database.Raw("select cat.id, cat.name, cat.description,cat.parent_id, f.filename,f.file_path, pcat.name as parent from categories as cat left join file_uploads as f on f.category_id = cat.id left join categories as pcat on pcat.id = cat.parent_id where f.default_image=1 group by cat.id ").Rows()
 
 	var cat []models.CatagoryList
 	var id int

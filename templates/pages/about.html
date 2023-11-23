@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     {{template "layouts/headers.html" . }}
-</head>
+  </head>
 
-<body>
+  <body>
     {{template "layouts/header-menu.html" . }}
-{{ .content.content }}
+    <div class="container">
+      <h1>{{ .content.title }}</h1>
+      <p>{{ .content.content }}</p>
 
-{{template "layouts/footer.html" . }}
+      <p></p>
+      <div>
+        <ol>
+          <li>
+            <strong>Set the scene</strong>: Introduce the characters or setting,
+            and establish the status quo or “the way things were” for you, your
+            target customer, or your industry.
+          </li>
+          <li>
+            <strong><strong>Introduce the problem:</strong></strong> Describe
+            the problem that called you (the main character) to act.
+          </li>
+          <li>
+            <strong>Rise to the challenge: </strong>Explain how you set out to
+            find a solution (i.e. start your business) and the obstacles you
+            faced along the way.
+          </li>
+          <li>
+            <strong>Arrive at a solution: </strong>Share details of how your
+            business is pursuing its purpose and the milestones youhave hit.
+          </li>
+          <li>
+            <strong>Envision whats next: </strong>Paint a picture of the future
+            for your company or state its mission and goals.
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    {{template "layouts/footer.html" . }}
+  </body>
+</html>
