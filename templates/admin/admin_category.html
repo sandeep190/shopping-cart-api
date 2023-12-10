@@ -65,11 +65,13 @@
                             class="form-select"
                             name="parent_id"
                           >
-                            <option value="0">Select One</option>
+                            <option value="0" {{ .id  }}>Select One</option>
                             {{ range $key, $value := .category.categories}}
+                            {{/* {{ if ne .id $value.id }} */}}
                             <option value="{{ $value.id}}" {{ if eq $value.id $.selectedCategory.ParentId }} selected {{ end}}>
                               {{ $value.name }}
                             </option>
+                            {{/* {{ end }} */}}
                             {{ end }}
                           </select>
                         </div>

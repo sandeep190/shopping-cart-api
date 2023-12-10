@@ -62,6 +62,7 @@ func saveCategory(c *gin.Context) {
 	parent, _ := strconv.Atoi(c.PostForm("parent_id"))
 	ID, _ := strconv.Atoi(c.PostForm("id"))
 	form, err := c.MultipartForm()
+	log.Println("parent id for save ", parent)
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
@@ -113,8 +114,13 @@ func saveCategory(c *gin.Context) {
 		category := models.Category{Name: name, Description: description, Images: categoryImages, ParentId: parent}
 		err = database.Create(&category).Error
 	} else {
-		category := models.Category{Name: name, Description: description, Images: categoryImages, ParentId: parent, ID: ID}
-		err = database.Updates(&category).Where("id", ID).Error
+		var updateData = map[string]interface{}{
+			"name":        name,
+			"description": description,
+			"parent_id":   parent,
+			"id":          ID,
+		}
+		err = database.Table("categories").Where("id=?", ID).Updates(&updateData).Error
 	}
 	if err != nil {
 		log.Fatal(err)
