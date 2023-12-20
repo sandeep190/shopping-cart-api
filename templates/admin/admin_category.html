@@ -14,7 +14,7 @@
     </title>
     <meta name="description" content="" />
     {{ template "admin_header.html"}}
-    
+
   </head>
   <body>
     <!-- Layout wrapper -->
@@ -25,7 +25,7 @@
         <!-- / Menu -->
         <!-- Layout container -->
         <div class="layout-page">
-          
+
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
@@ -45,7 +45,7 @@
                         method="post"
                         enctype="multipart/form-data"
                       >
-                      
+
                         <div class="mb-3">
                           <label class="form-label" for="basic-default-fullname">Category Name</label>
                           <input
@@ -56,7 +56,7 @@
                           />
                         </div>
                         <div class="mb-3">
-                         
+
                           <label for="defaultSelect" class="form-label"
                             >Perent Category</label
                           >
@@ -125,7 +125,7 @@
                     <td>{{ $value.name}}</td>
                     <td>{{ $value.parent}}</td>
                     <td>
-                      <img id="img_{{ $value.id }}" src="{{ $value.image_urls}}" width="100px"/>                     
+                      <img id="img_{{ $value.id }}" src="{{ $value.image_urls}}" width="100px"/>
                     </td>
                     <td>{{$value.description}}</td>
                     <td> <a href ="/admin/master/category?edit={{ $value.id }}">
@@ -133,12 +133,12 @@
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                       </svg>
-                       </a> 
+                       </a>
                        <a class="bi bi-trash delCat" cat-id="{{ $value.id }}" style="color:red" >del </a>
                       </td>
                   </tr>
                   {{ end }}
-                  
+
                 </tbody>
               </table>
               <link
@@ -163,13 +163,13 @@
       <!-- Overlay -->
       <script>
         $(document).ready(function () {
-    
+
           $("#table_id").DataTable();
 
           $("form#categorydata").submit(function(e) {
-            e.preventDefault();    
+            e.preventDefault();
             var formData = new FormData(this);
-        
+
             $.ajax({
                 url: '/admin/master/savecategory',
                 type: 'POST',

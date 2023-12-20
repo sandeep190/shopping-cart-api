@@ -14,6 +14,7 @@ type FileUpload struct {
 
 	Product   Category `gorm:"association_foreignkey:ProductId"`
 	ProductId uint     `gorm:"default:null"`
+	// DefaultImage uint     `gorm:"default:0"`
 }
 
 func CategoryImages(db *gorm.DB) *gorm.DB {

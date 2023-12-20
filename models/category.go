@@ -10,7 +10,7 @@ type Category struct {
 	ID          int          `gorm:"primary key"`
 	Name        string       `gorm:"not null"`
 	Description string       `gorm:"default:null"`
-	ParentId    int          `gorm:"default:0,nozero"`
+	ParentId    int          `gorm:"default:0"`
 	Image       string       `gorm:"default:null"`
 	Slug        string       `gorm:"unique_index"`
 	Images      []FileUpload `gorm:"foreignKey:CategoryId"`
