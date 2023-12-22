@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"shopping_cart/database"
 	"shopping_cart/models"
@@ -14,11 +15,18 @@ type Pages struct {
 	Content template.HTML `json:"content"`
 }
 
-type result struct {
-	Id       string `json:"id"`
+type Result struct {
+	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Filename string `json:"filename"`
 	FilePath string `json:"file_path"`
+}
+
+type CategoryMenu struct {
+	Id     int
+	Name   string
+	Parent int
+	Child  []CategoryMenu
 }
 
 func PagesRoutes(routes *gin.RouterGroup) {
@@ -41,14 +49,23 @@ func Index(c *gin.Context) {
 	data["content"] = "this is the index page"
 	var CategoryList []models.CatagoryList
 
-	var result []result
-	database.DB.Table("categories").Select("id,name").Find(&CategoryList)
-	database.DB.Model(&CategoryList).Select("categories.id,categories.name, f.filename,f.file_path").
+	result := make(map[int]Result)
+	catMenuList := make(map[int]CategoryMenu)
+	database.DB.Table("categories").Select("categories.id,categories.name,categories.parent_id,f.filename,f.file_path").
 		Joins("left join file_uploads as f on f.category_id = categories.id").
-		Where("f.default_image", 1).Where("parent_id", 0).
-		Group("categories.id").Find(&result)
+		Group("categories.id").Find(&CategoryList)
+	//log.Printf("category data===>%#v", CategoryList)
+	for _, val := range CategoryList {
+		catMenuList[val.ID] = CategoryMenu{Id: val.ID, Name: val.Name, Parent: val.ParentId}
+		if val.ParentId == 0 {
+			result[val.ID] = Result{Id: val.ID, Name: val.Name, Filename: val.Filename, FilePath: val.FilePath}
+		}
+
+	}
+	log.Printf("category data===>%+v", result)
 
 	data["categoryList"] = result
+	data["catMenuList"] = catMenuList
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"content": data,
