@@ -39,7 +39,7 @@ func main() {
 
 	controllers.PagesRoutes(&app.RouterGroup)
 	controllers.AdminRoutes(&app.RouterGroup)
-	app.Run(":2000")
+	app.Run(":9000")
 }
 
 func migrate(db *gorm.DB) {

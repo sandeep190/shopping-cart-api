@@ -20,6 +20,7 @@ func AdminRoutes(routes *gin.RouterGroup) {
 	routes.GET("/admin/master/category", AdminCategoryList)
 	routes.POST("/admin/master/savecategory", saveCategory)
 	routes.POST("/admin/master/del_category", DelCategory)
+	routes.GET("/admin/master/products", AdminProductsList)
 }
 
 func AdminIndex(c *gin.Context) {
@@ -152,5 +153,32 @@ func DelCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success":  true,
 		"messages": "Data Deleted successfully",
+	})
+}
+
+func AdminProductsList(c *gin.Context) {
+	database := database.GetConnection()
+	edit_id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
+	rows, _ := database.Raw("select cat.id, cat.name, cat.parent_id from categories as cat order by cat.id desc").Rows()
+
+	var cat []models.CatagoryList
+	var id int
+	for rows.Next() {
+		database.ScanRows(rows, &cat)
+		rows.Scan(&id)
+	}
+
+	var selectedCategory models.CatagoryList
+	for _, value := range cat {
+		if value.ID == edit_id {
+			selectedCategory = value
+		}
+	}
+	c.HTML(http.StatusOK, "admin_products.html", gin.H{
+		"title":            "Admin - products Details",
+		"category":         dtobjects.CategoryListAdminDto(cat),
+		"endpoint":         Geturl(c),
+		"selectedCategory": selectedCategory,
+		"id":               edit_id,
 	})
 }
