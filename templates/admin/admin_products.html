@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ .title }}</title>
+    <meta name="description" content="" />
+    {{ template "admin_header.html"}}
+  </head>
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+        {{ template "admin_sidebar.html" . }}
+        <!-- / Menu -->
+        <!-- Layout container -->
+        <div class="layout-page">
+          <div class="content-wrapper">
+            <!-- Content -->
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="row">
+                <div class="col-9">
+                  <span class="text-muted fw-light">Category</span> Details
+                </div>
+                {{ template "admin_top_header.html" }}
+              </div>
+              <!-- Basic Layout -->
+              <div class="row">
+                <div class="col-xl">
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <form
+                        id="categorydata"
+                        action="/admin/master/savecategory"
+                        method="post"
+                        enctype="multipart/form-data"
+                      >
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-fullname"
+                            >Title</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="basic-default-fullname"
+                            name="name"
+                            value="{{ .selectedCategory.Name }}"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="defaultSelect" class="form-label"
+                            >Category</label
+                          >
+                          <select
+                            id="defaultSelect"
+                            class="form-select"
+                            name="catgoory_id"
+                          >
+                            <option value="0" {{ .id }}>Select One</option>
+                          </select>
+                        </div>
+
+                        <div class="mb-3">
+                          {{ if .selectedCategory.Filename}}
+                          <img
+                            src="/static/images/categories/{{ .selectedCategory.Filename }}"
+                            width="150px"
+                          /><br />
+                          {{ end }}
+                          <label for="formFile" class="form-label">Image</label>
+                          <input
+                            class="form-control"
+                            type="file"
+                            id="formFile"
+                            name="image"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-message"
+                            >Description</label
+                          >
+                          <textarea
+                            id="basic-default-message"
+                            class="form-control"
+                            name="description"
+                          >
+{{ .selectedCategory.Description }}</textarea
+                          >
+                        </div>
+                        <input type="hidden" value="{{ .id }}" name="id" />
+                        <button class="btn btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <table id="table_id" class="display">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>parent</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{ range $key, $value := .category.categories }}
+                  <tr id="catid_{{ $value.id }}">
+                    <td>{{ $value.id }}</td>
+                    <td>{{ $value.name}}</td>
+                    <td>{{ $value.parent}}</td>
+                    <td>
+                      <img
+                        id="img_{{ $value.id }}"
+                        src="{{ $value.image_urls}}"
+                        width="100px"
+                      />
+                    </td>
+                    <td>{{$value.description}}</td>
+                    <td>
+                      <a href="/admin/master/category?edit={{ $value.id }}">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-pencil-square"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                          />
+                          <path
+                            fill-rule="evenodd"
+                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                          />
+                        </svg>
+                      </a>
+                      <a
+                        class="bi bi-trash delCat"
+                        cat-id="{{ $value.id }}"
+                        style="color: red"
+                        >del
+                      </a>
+                    </td>
+                  </tr>
+                  {{ end }}
+                </tbody>
+              </table>
+              <link
+                rel="stylesheet"
+                type="text/css"
+                href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css"
+              />
+
+              <script
+                type="text/javascript"
+                charset="utf8"
+                src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
+              ></script>
+            </div>
+            <!-- / Content -->
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      </div>
+      <!-- Overlay -->
+      <script>
+        $(document).ready(function () {
+          $("#table_id").DataTable();
+
+          $("form#categorydata").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+              url: "/admin/master/savecategory",
+              type: "POST",
+              data: formData,
+              success: function (data) {
+                if (data.success) {
+                  alert("data created/updated Sucessfuly !!!!");
+                  window.location.reload();
+                } else {
+                  alert("Something wnet wrong!!!");
+                }
+              },
+              cache: false,
+              contentType: false,
+              processData: false,
+            });
+          });
+
+          $(".delCat").click(function () {
+            var catId = $(this).attr("cat-id");
+            var img = $("#img_" + catId).attr("src");
+            alert(img);
+            $.ajax({
+              url: "/admin/master/del_category?delid=" + catId + "&img=" + img,
+              type: "POST",
+              success: function (data) {
+                if (data.success) {
+                  alert("Category deleted Successfuly!!");
+                  $("#catid_" + catId).hide();
+                } else {
+                  alert("Somthings went wrong!!!");
+                }
+              },
+            });
+          });
+        });
+      </script>
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+    {{ template "admin_footer.html"}}
+  </body>
+</html>
