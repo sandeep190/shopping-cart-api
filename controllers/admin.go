@@ -21,6 +21,7 @@ func AdminRoutes(routes *gin.RouterGroup) {
 	routes.POST("/admin/master/savecategory", saveCategory)
 	routes.POST("/admin/master/del_category", DelCategory)
 	routes.GET("/admin/master/products", AdminProductsList)
+	routes.POST("/admin/master/saveProducts", SaveProducts)
 }
 
 func AdminIndex(c *gin.Context) {
@@ -159,26 +160,74 @@ func DelCategory(c *gin.Context) {
 func AdminProductsList(c *gin.Context) {
 	database := database.GetConnection()
 	edit_id, _ := strconv.Atoi(c.Request.URL.Query().Get("edit"))
-	rows, _ := database.Raw("select cat.id, cat.name, cat.parent_id from categories as cat order by cat.id desc").Rows()
-
-	var cat []models.CatagoryList
-	var id int
-	for rows.Next() {
-		database.ScanRows(rows, &cat)
-		rows.Scan(&id)
+	var products []models.ProductList
+	err := database.Table("products p").
+		Joins("left join categories cat on p.cat_id=cat.id").
+		Select("p.id, p.title, p.cat_id, p.sort_desc, p.price, p.quantity").
+		Scan(&products).Error
+	if err != nil {
+		log.Println("error==>", err)
 	}
-
-	var selectedCategory models.CatagoryList
-	for _, value := range cat {
+	log.Printf("query==>%#v", products)
+	var categories []models.CatagoryList
+	database.Select("id", "name").Find(&categories)
+	log.Println("query category==>", categories)
+	var selectedProducts models.ProductList
+	for _, value := range products {
 		if value.ID == edit_id {
-			selectedCategory = value
+			selectedProducts = value
 		}
 	}
 	c.HTML(http.StatusOK, "admin_products.html", gin.H{
 		"title":            "Admin - products Details",
-		"category":         dtobjects.CategoryListAdminDto(cat),
+		"category":         dtobjects.CategoryListAdminDto(categories),
+		"products":         products,
 		"endpoint":         Geturl(c),
-		"selectedCategory": selectedCategory,
+		"selectedProducts": selectedProducts,
 		"id":               edit_id,
+	})
+}
+
+func SaveProducts(c *gin.Context) {
+	database := database.GetConnection()
+	title := c.PostForm("title")
+	description := c.PostForm("description")
+	sort_desc := c.PostForm("sort_desc")
+	category_id, _ := strconv.Atoi(c.PostForm("category_id"))
+	ID, _ := strconv.Atoi(c.PostForm("id"))
+	price, _ := strconv.Atoi(c.PostForm("price"))
+	Quantity, _ := strconv.Atoi(c.PostForm("quantity"))
+	// form, err := c.MultipartForm()
+	// log.Println("parent id for save ", parent)
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+	// 	return
+	// }
+	//files := form.File["image"]
+	category := models.ProductList{Title: title,
+		Details:  description,
+		CatID:    category_id,
+		Price:    float32(price),
+		Quantity: Quantity,
+		SortDesc: sort_desc,
+	}
+	var err error
+	if ID == 0 {
+		err = database.Table("products").Create(&category).Error
+	} else {
+		err = database.Table("products").Where("id", ID).Updates(&category).Error
+	}
+
+	if err != nil {
+		log.Panic("Some internal server error", err)
+		c.JSON(http.StatusOK, gin.H{
+			"success":  false,
+			"messages": err,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success":  true,
+		"messages": "Data save successfully",
 	})
 }

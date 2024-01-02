@@ -7,21 +7,31 @@ import (
 
 type Product struct {
 	gorm.Model
-	Name        string `gorm:"size:255;not null"`
-	Description string `gorm:"not null"`
-	Slug        string `gorm:"size:255;unique_index;not null"`
-	Price       int    `gorm:"not null"`
-	Stock       int    `gorm:"not null"`
+	Title      string  `gorm:"size:255;not null"`
+	Detail     string  `gorm:"not null"`
+	SortDesc   string  `gorm:"not null"`
+	Slug       string  `gorm:"size:255;unique_index;not null"`
+	Price      float32 `gorm:"not null"`
+	Quantity   int     `gorm:"not null"`
+	CategoryID int     `gorm:"not null"`
 
-	Categories        []Category        `gorm:"many2many:products_categories;"`
-	ProductCategories []ProductCategory `gorm:"foreignkey:ProductId"`
+	Categories []Category `gorm:"many2many:products_categories;"`
 
-	Comments      []Comment    `gorm:"foreignKey:ProductId"`
-	Images        []FileUpload `gorm:"foreignKey:ProductId"`
-	CommentsCount int          `gorm:"-"`
+	Images string `gorm:"not null"`
 }
 
 func (product *Product) BeforeSave(*gorm.DB) (err error) {
-	product.Slug = slug.Make(product.Name)
+	product.Slug = slug.Make(product.Title)
 	return
+}
+
+type ProductList struct {
+	ID       int
+	Title    string
+	SortDesc string
+	CatID    int
+	Details  string
+	Price    float32
+	Quantity int
+	image    string
 }
