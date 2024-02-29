@@ -32,6 +32,8 @@ type CategoryMenu struct {
 func PagesRoutes(routes *gin.RouterGroup) {
 	routes.GET("", Index)
 	routes.GET("/pages/about", AboutUs)
+	routes.GET("/products/:categoryid", Shop)
+	routes.GET("/products/details/:productid", ShopDetails)
 }
 
 func AboutUs(c *gin.Context) {
@@ -69,5 +71,27 @@ func Index(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"content": data,
+	})
+}
+
+func Shop(c *gin.Context) {
+	data := make(map[string]interface{})
+	data["title"] = "products list "
+	data["content"] = "this is the products list"
+
+	c.HTML(http.StatusOK, "shop.html", gin.H{
+		"content":      data,
+		"categotyname": "",
+	})
+}
+
+func ShopDetails(c *gin.Context) {
+	data := make(map[string]interface{})
+	data["title"] = "Product descriptions"
+	data["content"] = "this is the descriptions"
+
+	c.HTML(http.StatusOK, "detail.html", gin.H{
+		"content":      data,
+		"categotyname": "",
 	})
 }

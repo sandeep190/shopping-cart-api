@@ -45,7 +45,7 @@ func main() {
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&models.Category{})
 	db.AutoMigrate(&models.Comment{})
-	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Products{})
 	db.AutoMigrate(&models.ProductCategory{})
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.FileUpload{})

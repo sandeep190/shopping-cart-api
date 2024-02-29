@@ -3,7 +3,7 @@ package models
 type ProductCategory struct {
 	Category   User `gorm:"association_foreignkey:CategoryId"`
 	CategoryId uint
-	Product    Product `gorm:"association_foreignkey:ProductId"`
+	Product    Products `gorm:"association_foreignkey:ProductId"`
 	ProductId  uint
 }
 

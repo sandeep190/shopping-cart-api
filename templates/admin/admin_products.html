@@ -30,106 +30,125 @@
 						<!-- Basic Layout -->
 						<div class="row">
 							<!-- <div class="col-12"> -->
-								<div class="card">
-									<div class="card-body">
-										<form id="productdata" method="post" enctype="multipart/form-data">
-											<div class="col mb-0 ">
-												<label class="form-label" for="basic-default-fullname">Title</label>
-												<input type="text" class="form-control" id="basic-default-fullname" name="name"
-													value="{{ .selectedProducts.Title }}" />
-											</div>
-											<div class="row mt-2">
-											<div class="col-6">
-												<label for="defaultSelect" class="form-label">Category</label>
-												<select id="defaultSelect" class="form-select" name="catgoory_id">
+							<div class="card">
+								<div class="card-body">
+									<form id="productdata" method="post" enctype="multipart/form-data">
+										<div class="col mb-0 ">
+											<label class="form-label" for="basic-default-fullname">Title</label>
+											<input type="text" class="form-control" id="basic-default-fullname"
+												name="title" value="{{ .selectedProducts.Title }}" />
+										</div>
+										<div class="row mt-2">
+											<div class="col-4">
+												<label for="category_id" class="form-label">Category</label>
+												<select id="category_id" class="form-select" name="category_id"
+													onchange="getSubCategory(this,'{{.selectedProducts.SubcatID}}')">
 													<option value="0" {{ .id }}>Select One</option>
 													{{ range $key, $value := .category.categories}}
 
-													<option value="{{ $value.id}}" {{ if eq $value.id $.selectedProducts.CatID }} selected {{ end}}>
+													<option value="{{ $value.id}}" {{ if eq $value.id
+														$.selectedProducts.CatID }} selected {{ end}}>
 														{{ $value.name }}
 													</option>
 													{{ end }}
 												</select>
 											</div>
+											<div class="col-4">
+												<label for="subcategory" class="form-label">Sub Category</label>
+												<select id="subcategory" class="form-select" name="sub_category_id">
+													<option value="0">Select One</option>
+												</select>
+											</div>
 
-											<div class="col-6">
+											<div class="col-4">
 
 												<label for="formFile" class="form-label">Image</label>
 												<input class="form-control" type="file" id="formFile" name="image" />
+
+											</div>
+											<div class="col-4">
+												{{ if $.selectedProducts.Images }}
+												<img src="/static/images/products/{{ $.selectedProducts.Images}}"
+													width="100px">
+												{{ end }}
 											</div>
 										</div>
 										<div class="row mt-2">
 											<div class="col-3">
 												<label class="form-label" for="price">Price</label>
-												<input id="price" class="form-control" name="price" value="{{ .selectedProducts.Price }}"/>
+												<input id="price" class="form-control" name="price"
+													value="{{ if gt .selectedProducts.Price 0.0 }}{{ .selectedProducts.Price }}{{ end }}" />
 											</div>
 											<div class="col-3">
 												<label class="form-label" for="quantity">Quantity</label>
-												<input id="quantity" class="form-control" name="quantity" value="{{ .selectedProducts.Quantity }}"/>
+												<input id="quantity" class="form-control" name="quantity"
+													value="{{ if gt .selectedProducts.Quantity 0 }}{{ .selectedProducts.Quantity }}{{ end }}" />
 											</div>
 											<div class="col-6">
-												<label class="form-label" for="basic-default-message">Short Description</label>
-												<textarea id="sort_desc" class="form-control" name="sort_desc">{{ .selectedProducts.SortDesc }}</textarea>
+												<label class="form-label" for="basic-default-message">Short
+													Description</label>
+												<textarea id="sort_desc" class="form-control"
+													name="sort_desc">{{ .selectedProducts.SortDesc }}</textarea>
 											</div>
 										</div>
-											<div class="mb-3 mt-2">
-												<label class="form-label" for="basic-default-message">Description</label>
-												<textarea id="basic-default-message" class="form-control" name="description">
-												{{ .selectedProducts.Details }}
-											</textarea>
-											</div>
-											<input type="hidden" value="{{ .id }}" name="id" />
-											<button class="btn btn-primary float-right">Save</button>
-										</form>
-									</div>
+										<div class="mb-3 mt-2">
+											<label class="form-label" for="basic-default-message">Description</label>
+											<textarea id="basic-default-message" class="form-control"
+												name="description">{{ .selectedProducts.Details }}</textarea>
+										</div>
+										<input type="hidden" value="{{ .id }}" name="id" />
+										<button class="btn btn-primary float-right">Save</button>
+									</form>
+								</div>
 								<!-- </div> -->
 							</div>
 						</div>
 						<div class="card mt-5">
 
 
-						<table id="table_id" class="display mt-5">
-							<thead>
-								<tr>
-									<th>Id</th>
-									<th>Title</th>
-									<th>sort Desc</th>
-									<th>Image</th>
-									<th>Price</th>
-									<th>Quantity</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody>
+							<table id="table_id" class="display mt-5">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Title</th>
+										<th>sort Desc</th>
+										<th>Image</th>
+										<th>Price</th>
+										<th>Quantity</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
 
-								{{ range $key ,$value := .products }}
-								<tr id="catid_{{ $value.ID }}">
-									<td>{{ $value.ID }}</td>
-									<td>{{ $value.Title}}</td>
-									<td>{{ $value.SortDesc}}</td>
-									<td>
-										<img id="img_{{ $value.ID }}" src="" width="100px" />
-									</td>
-									<td>{{$value.Price}}</td>
-									<td>{{$value.Quantity}}</td>
-									<td>
-										<a href="/admin/master/products?edit={{ $value.ID }}">
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-												class="bi bi-pencil-square" viewBox="0 0 16 16">
-												<path
-													d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-												<path fill-rule="evenodd"
-													d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-											</svg>
-										</a>
-										<a class="bi bi-trash delCat" cat-id="{{ $value.ID }}" style="color: red">del
-										</a>
-									</td>
-								</tr>
-								{{ end }}
-							</tbody>
-						</table>
-					</div>
+									{{ range $key ,$value := .products }}
+									<tr id="catid_{{ $value.ID }}">
+										<td>{{ $value.ID }}</td>
+										<td>{{ $value.Title}}</td>
+										<td>{{ $value.SortDesc}}</td>
+										<td>
+											<img id="img_{{ $value.ID }}" src="" width="100px" />
+										</td>
+										<td>{{$value.Price}}</td>
+										<td>{{$value.Quantity}}</td>
+										<td>
+											<a href="/admin/master/products?edit={{ $value.ID }}">
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+													fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+													<path
+														d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+													<path fill-rule="evenodd"
+														d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+												</svg>
+											</a>
+											<a class="bi bi-trash delCat" cat-id="{{ $value.ID }}"
+												style="color: red">del
+											</a>
+										</td>
+									</tr>
+									{{ end }}
+								</tbody>
+							</table>
+						</div>
 						<link rel="stylesheet" type="text/css"
 							href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
 
@@ -145,8 +164,36 @@
 		</div>
 		<!-- Overlay -->
 		<script>
+			function getSubCategory(subcat) {
+				pcategory = $("#category_id").val();
+
+				console.log(pcategory)
+				$.ajax({
+					url: '/admin/master/getsubcatgory',
+					type: 'POST',
+					data: JSON.stringify({ "pcateID": pcategory }),
+					dataType: "json",
+					success: function (response) {
+						if (response.success) {
+							var html="<option value='0'>select one</option>";
+							$.each(response.category, function (key, value) {
+								selected = (value.id==subcat)?"selected":"";
+								html += `<option value="${value.id}" ${selected}>${value.name}</option>`;
+							});
+							console.log(html);
+							$("#subcategory").html(html);
+						} else {
+							console.log("Something wnet wrong!!!")
+						}
+					},
+					cache: false,
+					contentType: false,
+					processData: false
+				});
+			}
 			$(document).ready(function () {
 				$("#table_id").DataTable();
+				getSubCategory("{{.selectedProducts.SubcatID}}");
 
 				$("form#productdata").submit(function (e) {
 					e.preventDefault();
@@ -159,7 +206,7 @@
 						success: function (data) {
 							if (data.success) {
 								alert("data created/updated Sucessfuly !!!!");
-								window.location.reload();
+								window.location.href="/admin/master/products";
 							} else {
 								alert("Something wnet wrong!!!");
 							}
