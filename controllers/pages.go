@@ -87,11 +87,18 @@ func Shop(c *gin.Context) {
 
 func ShopDetails(c *gin.Context) {
 	data := make(map[string]interface{})
-	data["title"] = "Product descriptions"
+	productId := c.Param("productid")
+	log.Printf("product id===%#v", productId)
+
+	var prodDetails models.ProductList
+	db := database.DB
+	db.Table("products").Scan(&prodDetails).Where("id", productId)
+	log.Printf("product prodDetails===%#v", prodDetails)
+	data["title"] = prodDetails.Title
 	data["content"] = "this is the descriptions"
 
 	c.HTML(http.StatusOK, "detail.html", gin.H{
-		"content":      data,
-		"categotyname": "",
+		"content":     data,
+		"prodDetails": prodDetails,
 	})
 }

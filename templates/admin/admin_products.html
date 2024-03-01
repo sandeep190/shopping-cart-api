@@ -59,14 +59,15 @@
 													<option value="0">Select One</option>
 												</select>
 											</div>
-
+										</div>
+										<div class="row mt-2">
 											<div class="col-4">
 
 												<label for="formFile" class="form-label">Image</label>
 												<input class="form-control" type="file" id="formFile" name="image" />
 
 											</div>
-											<div class="col-4">
+											<div class="col-8">
 												{{ if $.selectedProducts.Images }}
 												<img src="/static/images/products/{{ $.selectedProducts.Images}}"
 													width="100px">
@@ -84,12 +85,14 @@
 												<input id="quantity" class="form-control" name="quantity"
 													value="{{ if gt .selectedProducts.Quantity 0 }}{{ .selectedProducts.Quantity }}{{ end }}" />
 											</div>
-											<div class="col-6">
+
+										</div>
+										<div class="mb-3 mt-2">
 												<label class="form-label" for="basic-default-message">Short
 													Description</label>
 												<textarea id="sort_desc" class="form-control"
 													name="sort_desc">{{ .selectedProducts.SortDesc }}</textarea>
-											</div>
+
 										</div>
 										<div class="mb-3 mt-2">
 											<label class="form-label" for="basic-default-message">Description</label>
@@ -241,5 +244,25 @@
 	<!-- / Layout wrapper -->
 	{{ template "admin_footer.html"}}
 </body>
+<script src="https://cdn.tiny.cloud/1/yy9r5es79an5g8zjb14xq4jju2f8bfy9hpeufz7rlb7uych4/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+<!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    tinycomments_mode: 'embedded',
+    tinycomments_author: 'Author name',
+    mergetags_list: [
+      { value: 'First.Name', title: 'First Name' },
+      { value: 'Email', title: 'Email' },
+    ],
+    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+  });
+</script>
+<textarea>
+  Welcome to TinyMCE!
+</textarea>
 
 </html>
