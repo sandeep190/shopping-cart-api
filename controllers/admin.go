@@ -199,14 +199,8 @@ func SaveProducts(c *gin.Context) {
 	ID, _ := strconv.Atoi(c.PostForm("id"))
 	price, _ := strconv.Atoi(c.PostForm("price"))
 	Quantity, _ := strconv.Atoi(c.PostForm("quantity"))
-	// form, err := c.MultipartForm()
-	// log.Println("parent id for save ", parent)
-	// if err != nil {
-	// 	c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
-	// 	return
-	// }
-	//files := form.File["image"]
-	path, err := SaveImages(c, "products", title)
+	log.Println("price==============>", price)
+	path, err := SaveImages(c, "products")
 	if err != nil {
 		c.JSON(http.StatusOK, dtobjects.DetailedErrors("io_error", err))
 		return
@@ -216,7 +210,7 @@ func SaveProducts(c *gin.Context) {
 		Details:  description,
 		CatID:    category_id,
 		SubcatID: subcatId,
-		Price:    float32(price),
+		Price:    uint32(price),
 		Quantity: Quantity,
 		SortDesc: sort_desc,
 		Images:   path,
@@ -241,7 +235,7 @@ func SaveProducts(c *gin.Context) {
 	})
 }
 
-func SaveImages(c *gin.Context, path string, filenameSufix string) (string, error) {
+func SaveImages(c *gin.Context, path string) (string, error) {
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
@@ -250,7 +244,7 @@ func SaveImages(c *gin.Context, path string, filenameSufix string) (string, erro
 	files := form.File["image"]
 
 	for _, file := range files {
-		fileName := filenameSufix + "__" + randomString(16) + ".png"
+		fileName := randomString(16) + "__" + randomString(16) + ".png"
 
 		dirPath := filepath.Join(".", "static", "images", path)
 		filePath := filepath.Join(dirPath, fileName)

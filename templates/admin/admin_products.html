@@ -114,7 +114,6 @@
 									<tr>
 										<th>Id</th>
 										<th>Title</th>
-										<th>sort Desc</th>
 										<th>Image</th>
 										<th>Price</th>
 										<th>Quantity</th>
@@ -127,9 +126,8 @@
 									<tr id="catid_{{ $value.ID }}">
 										<td>{{ $value.ID }}</td>
 										<td>{{ $value.Title}}</td>
-										<td>{{ $value.SortDesc}}</td>
 										<td>
-											<img id="img_{{ $value.ID }}" src="" width="100px" />
+											<img id="img_{{ $value.ID }}" src="/static/images/products/{{$value.Images}}" width="100px" />
 										</td>
 										<td>{{$value.Price}}</td>
 										<td>{{$value.Quantity}}</td>
@@ -261,8 +259,5 @@
     ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
   });
 </script>
-<textarea>
-  Welcome to TinyMCE!
-</textarea>
 
 </html>
