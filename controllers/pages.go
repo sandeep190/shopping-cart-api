@@ -10,6 +10,8 @@ import (
 	"shopping_cart/dtobjects"
 	"shopping_cart/models"
 
+	ginsession "shopping_cart/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -121,6 +123,12 @@ func ShopDetails(c *gin.Context) {
 
 func Carts(c *gin.Context) {
 	data := make(map[string]interface{})
+	store := ginsession.FromContext(c)
+	userId, ok := store.Get("userId")
+	if !ok {
+		c.Redirect(302, "/login")
+	}
+	log.Println("session ", userId, ok)
 	data["title"] = "users Carts "
 	data["content"] = "users carts details"
 	c.HTML(http.StatusOK, "cart.html", gin.H{
@@ -134,6 +142,13 @@ func SignIn(c *gin.Context) {
 	data["title"] = "Sigin/SignUp "
 	data["content"] = "This Is the Login Page"
 
+	store := ginsession.FromContext(c)
+	sessemail, ok := store.Get("email")
+	log.Println("emails sessison===", sessemail, ok)
+	if ok {
+		c.Redirect(302, "/")
+	}
+
 	if c.Request.Method == "POST" {
 		var request dtobjects.LoginRequest
 		var user models.User
@@ -142,17 +157,30 @@ func SignIn(c *gin.Context) {
 		if err2 == nil {
 			log.Println("errror", err2)
 		}
-		log.Printf("request data #%v", request)
 		Pass := GetMD5Hash(request.Password)
-		log.Println("password===>", Pass)
-		database.DB.Select("email,name,contact").Where("email", request.Email).Where("password", Pass).First(&user)
-		log.Printf("users Data===>%#v", user)
-		log.Println()
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "success",
-			"message": "Login successfull",
-		})
-		return
+		database.DB.Select("id,email,name,contact").Where("email", request.Email).Where("password", Pass).First(&user)
+
+		if request.Email == user.Email {
+			store.Set("email", user.Email)
+			store.Set("userId", user.ID)
+			err := store.Save()
+			if err != nil {
+				c.AbortWithError(500, err)
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"status":  true,
+				"message": "Login successfull",
+			})
+			return
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status":  false,
+				"message": "Email/password do not match!",
+			})
+			return
+		}
 	} else {
 
 		c.HTML(http.StatusOK, "login.html", gin.H{

@@ -395,7 +395,7 @@
 			<!-- SIGN IN -->
 			<div class="col align-items-center flex-col sign-in">
 				<div class="form-wrapper align-items-center">
-					<form>
+
 						<div class="form sign-in">
 							<div class="input-group">
 								<i class='bx bxs-user'></i>
@@ -422,7 +422,7 @@
 								</b>
 							</p>
 						</div>
-					</form>
+
 				</div>
 				<div class="form-wrapper">
 
@@ -490,7 +490,7 @@
 			data: JSON.stringify({ "email": username, "password": pass }),
 			success: function (data) {
 				if (data.status) {
-					console.log(data.message);
+					window.location.href="/"
 					return;
 				} else {
 					alert("Somthings went wrong!!!");

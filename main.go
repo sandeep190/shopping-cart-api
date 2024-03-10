@@ -28,11 +28,16 @@ func main() {
 	makeMigration(db)
 	app := gin.Default()
 	app.Use(cors.Default())
+
+	//add session lib
+	app.Use(middleware.New())
+
 	app.Use(middleware.JwtTokenVerify())
 	apiRoutes := app.Group("/api")
 
 	controllers.UsersRoutes(apiRoutes.Group("/users"))
 	controllers.CategoryRoutes(apiRoutes.Group("category"))
+
 	app.Static("/assets", "./assets")
 	app.Static("/static", "./static")
 	app.LoadHTMLGlob("templates/*/*.html")
