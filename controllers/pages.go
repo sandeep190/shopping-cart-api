@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"html/template"
 	"log"
 	"net/http"
 	"shopping_cart/database"
+	"shopping_cart/dtobjects"
 	"shopping_cart/models"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +34,8 @@ type CategoryMenu struct {
 
 func PagesRoutes(routes *gin.RouterGroup) {
 	routes.GET("", Index)
+	routes.GET("/login", SignIn)
+	routes.POST("/login", SignIn)
 	routes.GET("/pages/about", AboutUs)
 	routes.GET("/users/carts", Carts)
 	routes.GET("/products/:categoryid", Shop)
@@ -121,4 +126,42 @@ func Carts(c *gin.Context) {
 	c.HTML(http.StatusOK, "cart.html", gin.H{
 		"content": data,
 	})
+}
+
+func SignIn(c *gin.Context) {
+	log.Println("methods===>", c.Request.Method)
+	data := make(map[string]string)
+	data["title"] = "Sigin/SignUp "
+	data["content"] = "This Is the Login Page"
+
+	if c.Request.Method == "POST" {
+		var request dtobjects.LoginRequest
+		var user models.User
+
+		err2 := c.ShouldBindJSON(&request)
+		if err2 == nil {
+			log.Println("errror", err2)
+		}
+		log.Printf("request data #%v", request)
+		Pass := GetMD5Hash(request.Password)
+		log.Println("password===>", Pass)
+		database.DB.Select("email,name,contact").Where("email", request.Email).Where("password", Pass).First(&user)
+		log.Printf("users Data===>%#v", user)
+		log.Println()
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "success",
+			"message": "Login successfull",
+		})
+		return
+	} else {
+
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"content": data,
+		})
+	}
+}
+
+func GetMD5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
 }

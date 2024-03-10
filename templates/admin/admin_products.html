@@ -221,7 +221,7 @@
 				$(".delCat").click(function () {
 					var catId = $(this).attr("cat-id");
 					var img = $("#img_" + catId).attr("src");
-					alert(img);
+
 					$.ajax({
 						url: "/admin/master/del_category?delid=" + catId + "&img=" + img,
 						type: "POST",
