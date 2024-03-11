@@ -490,7 +490,8 @@
 			data: JSON.stringify({ "email": username, "password": pass }),
 			success: function (data) {
 				if (data.status) {
-					window.location.href="/"
+					alert(data.message);
+					//window.location.href="/"
 					return;
 				} else {
 					alert("Somthings went wrong!!!");

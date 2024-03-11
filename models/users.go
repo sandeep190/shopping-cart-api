@@ -51,6 +51,6 @@ func (user *User) GenerateJwtToken() string {
 
 type UsersCarts struct {
 	gorm.Model
-	UserId    string `gorm:"size(10);not null"`
-	ProductId int    `gorm:"size(10);not null"`
+	UserId    int `gorm:"size(10);not null"`
+	ProductId int `gorm:"size(10);not null"`
 }

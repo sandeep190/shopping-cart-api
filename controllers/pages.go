@@ -218,12 +218,17 @@ func addCards(ctx *gin.Context) {
 	log.Println("affected row====>", result.RowsAffected)
 
 	if result.RowsAffected == 0 {
+		log.Println("userId cards===>", userId)
+		log.Printf("users cards===>%#v", userId)
+		id, ok := userId.(int)
+		log.Println("userId cards===>", id, ok)
 		insertCarts := models.UsersCarts{
 			ProductId: productId,
-			UserId:    userId.(string),
+			UserId:    id,
 		}
+		log.Printf("insertCarts cards===>#%v", insertCarts)
 
-		database.DB.Table("user_carts").Save(&insertCarts)
+		//database.DB.Table("user_carts").Save(&insertCarts)
 	} else {
 		log.Println("update case")
 	}
