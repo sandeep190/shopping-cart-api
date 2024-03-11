@@ -48,3 +48,9 @@ func (user *User) GenerateJwtToken() string {
 	token, _ := jwt_token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	return token
 }
+
+type UsersCarts struct {
+	gorm.Model
+	UserId    string `gorm:"size(10);not null"`
+	ProductId int    `gorm:"size(10);not null"`
+}

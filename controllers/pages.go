@@ -9,6 +9,7 @@ import (
 	"shopping_cart/database"
 	"shopping_cart/dtobjects"
 	"shopping_cart/models"
+	"strconv"
 
 	ginsession "shopping_cart/middleware"
 
@@ -40,6 +41,7 @@ func PagesRoutes(routes *gin.RouterGroup) {
 	routes.POST("/login", SignIn)
 	routes.GET("/pages/about", AboutUs)
 	routes.GET("/users/carts", Carts)
+	routes.POST("/users/addtoCarts/:productid", addCards)
 	routes.GET("/products/:categoryid", Shop)
 	routes.GET("/products/details/:productid", ShopDetails)
 }
@@ -129,8 +131,10 @@ func Carts(c *gin.Context) {
 		c.Redirect(302, "/login")
 	}
 	log.Println("session ", userId, ok)
+
 	data["title"] = "users Carts "
 	data["content"] = "users carts details"
+
 	c.HTML(http.StatusOK, "cart.html", gin.H{
 		"content": data,
 	})
@@ -192,4 +196,35 @@ func SignIn(c *gin.Context) {
 func GetMD5Hash(text string) string {
 	hash := md5.Sum([]byte(text))
 	return hex.EncodeToString(hash[:])
+}
+
+func addCards(ctx *gin.Context) {
+	productId, _ := strconv.Atoi(ctx.Param("productid"))
+	log.Println("product id is ", productId)
+
+	store := ginsession.FromContext(ctx)
+	userId, ok := store.Get("userId")
+	if !ok {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "please sign-In for add to card",
+		})
+	}
+
+	log.Println("session ", userId, ok)
+	var usersCarts models.UsersCarts
+	result := database.DB.Table("user_carts").Where("user_id", userId).Where("product_id", productId).First(&usersCarts)
+	log.Printf("users cards===>#%v", usersCarts)
+	log.Println("affected row====>", result.RowsAffected)
+
+	if result.RowsAffected == 0 {
+		insertCarts := models.UsersCarts{
+			ProductId: productId,
+			UserId:    userId.(string),
+		}
+
+		database.DB.Table("user_carts").Save(&insertCarts)
+	} else {
+		log.Println("update case")
+	}
 }
