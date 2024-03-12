@@ -41,6 +41,7 @@ func PagesRoutes(routes *gin.RouterGroup) {
 	routes.POST("/login", SignIn)
 	routes.GET("/pages/about", AboutUs)
 	routes.GET("/users/carts", Carts)
+	routes.POST("/users/carts", Carts)
 	routes.POST("/users/addtoCarts/:productid", addCards)
 	routes.GET("/products/:categoryid", Shop)
 	routes.GET("/products/details/:productid", ShopDetails)
@@ -130,18 +131,70 @@ func Carts(c *gin.Context) {
 	if !ok {
 		c.Redirect(302, "/login")
 	}
-	log.Println("session ", userId, ok)
+	message := ""
+	if c.Request.Method == "POST" {
+		var request dtobjects.AddCart
+
+		err2 := c.ShouldBindJSON(&request)
+		if err2 == nil {
+			log.Println("errror", err2)
+		}
+		var usersCarts models.UserCarts
+		database.DB.Table("user_carts").Where("user_id", userId).
+			Where("product_id", request.ProductId).
+			First(&usersCarts)
+		if usersCarts.Quantity == 1 && request.RequestType == "minus" {
+			request.RequestType = "delete"
+		}
+		if request.RequestType == "add" {
+			usersCarts.Quantity++
+			database.DB.Table("user_carts").Save(&usersCarts)
+		} else if request.RequestType == "minus" {
+			usersCarts.Quantity--
+			database.DB.Table("user_carts").Save(&usersCarts)
+		} else if request.RequestType == "delete" {
+			database.DB.Table("user_carts").
+				Unscoped().
+				Delete(&usersCarts)
+		}
+		message = "carts updated successfuly!!"
+		c.JSON(http.StatusOK, gin.H{
+			"status":  true,
+			"message": message,
+		})
+		return
+	}
+
+	var userCarts []models.UserCartsList
+	database.DB.Table("user_carts").Select("user_carts.quantity,products.id as product_id,products.title,products.images, products.price").
+		Joins("left join products on products.id=user_carts.product_id").
+		Where("user_id", userId).Where("user_carts.deleted_at is null").Find(&userCarts)
+
+	cartSubTotal := 0
+	for index, a := range userCarts {
+		log.Printf("==========>%#v", a)
+		userCarts[index].Total = a.Price * a.Quantity
+		cartSubTotal += a.Price * a.Quantity
+	}
+	delivery := 0
+	if len(userCarts) > 0 {
+		delivery = 30
+	}
+	data["delivery"] = delivery
 
 	data["title"] = "users Carts "
 	data["content"] = "users carts details"
+	data["userCarts"] = userCarts
+	data["cartSubTotal"] = cartSubTotal
+	data["cartTotal"] = cartSubTotal + delivery
 
 	c.HTML(http.StatusOK, "cart.html", gin.H{
 		"content": data,
+		"message": message,
 	})
 }
 
 func SignIn(c *gin.Context) {
-	log.Println("methods===>", c.Request.Method)
 	data := make(map[string]string)
 	data["title"] = "Sigin/SignUp "
 	data["content"] = "This Is the Login Page"
@@ -200,7 +253,6 @@ func GetMD5Hash(text string) string {
 
 func addCards(ctx *gin.Context) {
 	productId, _ := strconv.Atoi(ctx.Param("productid"))
-	log.Println("product id is ", productId)
 
 	store := ginsession.FromContext(ctx)
 	userId, ok := store.Get("userId")
@@ -209,27 +261,33 @@ func addCards(ctx *gin.Context) {
 			"status":  false,
 			"message": "please sign-In for add to card",
 		})
+		return
 	}
-
-	log.Println("session ", userId, ok)
-	var usersCarts models.UsersCarts
+	var usersCarts models.UserCarts
 	result := database.DB.Table("user_carts").Where("user_id", userId).Where("product_id", productId).First(&usersCarts)
-	log.Printf("users cards===>#%v", usersCarts)
-	log.Println("affected row====>", result.RowsAffected)
 
 	if result.RowsAffected == 0 {
-		log.Println("userId cards===>", userId)
-		log.Printf("users cards===>%#v", userId)
-		id, ok := userId.(int)
-		log.Println("userId cards===>", id, ok)
-		insertCarts := models.UsersCarts{
+		id, _ := userId.(uint)
+		insertCarts := models.UserCarts{
 			ProductId: productId,
-			UserId:    id,
+			UserId:    int(id),
+			Quantity:  1,
 		}
-		log.Printf("insertCarts cards===>#%v", insertCarts)
-
-		//database.DB.Table("user_carts").Save(&insertCarts)
+		database.DB.Table("user_carts").Save(&insertCarts)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":  true,
+			"message": "Cart updated successfuly!",
+		})
+		return
 	} else {
 		log.Println("update case")
+		usersCarts.Quantity = usersCarts.Quantity + 1
+
+		database.DB.Table("user_carts").Save(&usersCarts)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":  true,
+			"message": "Cart updated successfuly!",
+		})
+		return
 	}
 }

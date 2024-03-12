@@ -49,8 +49,19 @@ func (user *User) GenerateJwtToken() string {
 	return token
 }
 
-type UsersCarts struct {
+type UserCarts struct {
 	gorm.Model
 	UserId    int `gorm:"size(10);not null"`
 	ProductId int `gorm:"size(10);not null"`
+	Quantity  int `gorm:"size(10);not null"`
+}
+
+type UserCartsList struct {
+	UserId    int
+	ProductId int
+	Title     string
+	Images    string
+	Quantity  int
+	Price     int
+	Total     int
 }

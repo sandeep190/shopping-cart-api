@@ -38,111 +38,35 @@
                         </tr>
                     </thead>
                     <tbody class="align-middle">
+						{{ range $key,$value := .content.userCarts}}
                         <tr>
-                            <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><img src="/static/images/products/{{ $value.Images}}" alt="" style="width: 50px;">{{ slice $value.Title 0 30 }}</td>
+                            <td class="align-middle">₹{{ $value.Price }}</td>
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <button class="btn btn-sm btn-primary btn-minus" onclick='updateCart({{ $value.ProductId }},"minus")'>
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{ $value.Quantity }}">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
+                                        <button class="btn btn-sm btn-primary btn-plus" onclick="updateCart({{ $value.ProductId }},'add')">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle">₹{{ $value.Total }}</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger" onclick="updateCart({{ $value.ProductId }},'delete')"><i class="fa fa-times"></i></button></td>
                         </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-2.jpg" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-3.jpg" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-4.jpg" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-5.jpg" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
+						{{ end }}
+						{{ $length := len .content.userCarts }}
+
+						{{ if eq $length 0 }}
+						<tr><td colspan="5"> carts are empty!!</td></tr>
+					{{ end }}
+
                     </tbody>
                 </table>
             </div>
@@ -160,17 +84,17 @@
                     <div class="border-bottom pb-2">
                         <div class="d-flex justify-content-between mb-3">
                             <h6>Subtotal</h6>
-                            <h6>$150</h6>
+                            <h6>₹{{ .content.cartSubTotal}}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            <h6 class="font-weight-medium">₹{{ .content.delivery}}</h6>
                         </div>
                     </div>
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total</h5>
-                            <h5>$160</h5>
+                            <h5>₹{{ .content.cartTotal}}</h5>
                         </div>
                         <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
                     </div>
@@ -188,15 +112,15 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
+    <script src="/assets/lib/easing/easing.min.js"></script>
+    <script src="/assets/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="/assets/js/common.js"></script>
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script src="/assets/mail/jqBootstrapValidation.min.js"></script>
+    <script src="/assets/mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/assets/js/main.js"></script>
 </body>
 
 </html>
