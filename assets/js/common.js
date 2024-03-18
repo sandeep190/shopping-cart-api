@@ -1,7 +1,11 @@
-function addCard(productId) {
+function addCard(productId,quantity) {
+	if(quantity ==0){
+		quantity = parseInt($('#quantity_details').val());
+	}
 	$.ajax({
-		url: "/users/addtoCarts/" + productId,
+		url: "/users/addtoCarts",
 		type: "POST",
+		data: JSON.stringify({ "quantity": quantity, "product_id": productId }),
 		success: function (data) {
 			if (data.status) {
 				alert(data.message)

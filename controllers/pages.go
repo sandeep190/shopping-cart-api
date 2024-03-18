@@ -9,7 +9,6 @@ import (
 	"shopping_cart/database"
 	"shopping_cart/dtobjects"
 	"shopping_cart/models"
-	"strconv"
 
 	ginsession "shopping_cart/middleware"
 
@@ -42,7 +41,7 @@ func PagesRoutes(routes *gin.RouterGroup) {
 	routes.GET("/pages/about", AboutUs)
 	routes.GET("/users/carts", Carts)
 	routes.POST("/users/carts", Carts)
-	routes.POST("/users/addtoCarts/:productid", addCards)
+	routes.POST("/users/addtoCarts", addCards)
 	routes.GET("/products/:categoryid", Shop)
 	routes.GET("/products/details/:productid", ShopDetails)
 }
@@ -115,7 +114,13 @@ func ShopDetails(c *gin.Context) {
 
 	db.Table("products").Select("id,price,title,images").Where("cat_id", prodDetails.CatID).Scan(&RelatedProduct)
 
-	log.Printf("category ==> %d and subcateogry==>%d", prodDetails.CatID, prodDetails.SubcatID)
+	store := ginsession.FromContext(c)
+	userId, ok := store.Get("userId")
+	if ok {
+		var carts models.UserCartsList
+		db.Table("user_carts").Where("user_id", userId).Where("product_id", productId).First(&carts)
+		data["carts"] = carts
+	}
 
 	c.HTML(http.StatusOK, "detail.html", gin.H{
 		"content":        data,
@@ -252,7 +257,6 @@ func GetMD5Hash(text string) string {
 }
 
 func addCards(ctx *gin.Context) {
-	productId, _ := strconv.Atoi(ctx.Param("productid"))
 
 	store := ginsession.FromContext(ctx)
 	userId, ok := store.Get("userId")
@@ -263,6 +267,17 @@ func addCards(ctx *gin.Context) {
 		})
 		return
 	}
+
+	var request dtobjects.AddCart
+
+	err2 := ctx.ShouldBindJSON(&request)
+	if err2 == nil {
+		log.Println("errror", err2)
+	}
+	log.Printf("request ====>%#v", request)
+	productId := request.ProductId
+	Quantity := request.Quantity
+
 	var usersCarts models.UserCarts
 	result := database.DB.Table("user_carts").Where("user_id", userId).Where("product_id", productId).First(&usersCarts)
 
@@ -271,7 +286,7 @@ func addCards(ctx *gin.Context) {
 		insertCarts := models.UserCarts{
 			ProductId: productId,
 			UserId:    int(id),
-			Quantity:  1,
+			Quantity:  Quantity,
 		}
 		database.DB.Table("user_carts").Save(&insertCarts)
 		ctx.JSON(http.StatusOK, gin.H{
@@ -281,7 +296,7 @@ func addCards(ctx *gin.Context) {
 		return
 	} else {
 		log.Println("update case")
-		usersCarts.Quantity = usersCarts.Quantity + 1
+		usersCarts.Quantity = usersCarts.Quantity + Quantity
 
 		database.DB.Table("user_carts").Save(&usersCarts)
 		ctx.JSON(http.StatusOK, gin.H{
